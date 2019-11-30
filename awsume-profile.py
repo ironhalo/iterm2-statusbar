@@ -16,10 +16,8 @@ async def main(connection):
     )
 
     @iterm2.StatusBarRPC
-    async def aws_profile(knobs):
-        profile = os.getenv('AWSUME_PROFILE',default='')
+    async def awsume_profile(knobs, profile=iterm2.Reference('user.awsume_profile?')):
         return f'aws: {profile}'
 
-    await component.async_register(connection, aws_profile)
-
+    await component.async_register(connection, awsume_profile)
 iterm2.run_forever(main)
