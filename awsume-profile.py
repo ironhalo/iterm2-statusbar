@@ -1,4 +1,8 @@
-#! /usr/bin/env python3
+"""
+Add the following to iterm2_print_user_vars
+
+iterm2_set_user_var awsProfile $AWSUME_PROFILE
+"""
 
 import asyncio
 import iterm2
@@ -16,8 +20,11 @@ async def main(connection):
     )
 
     @iterm2.StatusBarRPC
-    async def awsume_profile(knobs, profile=iterm2.Reference('user.awsume_profile?')):
-        return f'aws: {profile}'
+    async def awsume_profile(knobs, profile=iterm2.Reference('user.awsProfile?')):
+        if profile:
+            return f'aws: {profile}'
+        else:
+            return f''
 
     await component.async_register(connection, awsume_profile)
 iterm2.run_forever(main)
