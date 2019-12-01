@@ -4,10 +4,7 @@ Add the following to iterm2_print_user_vars
 iterm2_set_user_var awsProfile $AWSUME_PROFILE
 """
 
-import asyncio
 import iterm2
-import os
-
 
 async def main(connection):
     component = iterm2.StatusBarComponent(

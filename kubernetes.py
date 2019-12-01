@@ -1,5 +1,3 @@
-#! /usr/bin/env python3
-
 import asyncio
 import iterm2
 
@@ -16,13 +14,21 @@ async def main(connection):
 
     @iterm2.StatusBarRPC
     async def kubectl_context_coroutine(knobs):
-        proc = await asyncio.create_subprocess_shell(
+        ctx_proc = await asyncio.create_subprocess_shell(
             'kubectl config current-context',
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
-        stdout, stderr = await proc.communicate()
-        return f'⎈ {stdout.decode().strip()}' if not stderr else '⎈ kubectl not installed!'
+
+        ns_proc = await asyncio.create_subprocess_shell(
+            'kubectl config view --minify --output "jsonpath={..namespace}"',
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+
+        ctx_stdout, ctx_stderr = await ctx_proc.communicate()
+        ns_stdout, ns_stderr = await ns_proc.communicate()
+        return f'⎈ {ctx_stdout.decode().strip()}|{ns_stdout.decode().strip()}' if not ctx_stderr else '⎈ kubectl not installed!'
 
     await component.async_register(connection, kubectl_context_coroutine)
 
