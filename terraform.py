@@ -21,7 +21,7 @@ async def main(connection):
 
     @iterm2.StatusBarRPC
     async def tf_workspace(knobs, cwd=iterm2.Reference('user.pwd?')):
-        if os.path.isdir(os.path.join(cwd, '.terraform')):
+        if os.path.exists(os.path.join(cwd, '.terraform')):
             proc = await asyncio.create_subprocess_shell(
                 'terraform workspace show',
                 stdout=asyncio.subprocess.PIPE,
@@ -30,7 +30,7 @@ async def main(connection):
             stdout, stderr = await proc.communicate()
             return f'tf: {stdout.decode().strip()}'
         else:
-            return f''
+            return ""
 
     await component.async_register(connection, tf_workspace)
 
